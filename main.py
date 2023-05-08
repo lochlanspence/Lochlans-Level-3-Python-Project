@@ -22,7 +22,7 @@ class Shop:
         order_frame = Frame(parent)
         confirm_item_add_frame = Frame(parent)
 
-        food_items = [["Pizza", 8.50], ["Burger", 12.50], ["Fries", 2.50] , ["Soda", 1.50] , ["Sausage Roll", 6.50]]
+        self.food_items = [["Pizza", 8.50], ["Burger", 12.50], ["Fries", 2.50] , ["Soda", 1.50] , ["Sausage Roll", 6.50]]
 
         option_select_list = []
         self.order_list = []
@@ -32,13 +32,9 @@ class Shop:
         option_select_frame.grid(row=1, column=0, sticky="nsew")
         count = 0
         count2 = 0
-        for food in food_items:
-            if count == 3:
-                count = 0
-                count2 += 1
-            option_select_list.append(Button(option_select_frame, text=food[0], command=lambda: self.add_to_order(food[0], food[1])).grid(row=count,column=count2,sticky=NSEW,padx=5))
-            count+=1
-        
+        for food in self.food_items:
+            option_select_list.append(Button(option_select_frame, text=food[0], command=lambda  m = count: self.add_to_order(m)).grid(row=count,column=count2,sticky=NSEW,padx=5))
+            count += 1
 
         order_frame.grid(row=2, column=0, sticky="nsew")
         edit_order =Button(order_frame, text="Edit Order", command=lambda: self.edit_order()).grid(row=0,column=0,sticky=NSEW,padx=5)
@@ -46,10 +42,11 @@ class Shop:
         self.total_price = Label(order_frame, text="Total Price: $0.00", font=("Arial", 20))
         self.total_price.grid(row=0,column=2,sticky=NSEW,padx=5)
 
-    def add_to_order(self, name, price):
-        check = messagebox.askyesno("Confirm", "Are you sure you want to add " + name + " to your order?")
+    def add_to_order(self, count):
+        print(count)
+        check = messagebox.askyesno("Confirm", "Are you sure you want to add " + self.food_items[count][0] + " to your order?")
         if check == True:
-            self.order_list.append(Support(name, price))
+            self.order_list.append(Support(self.food_items[count][0], self.food_items[count][1]))
             self.update_total_price()
         else:
             pass

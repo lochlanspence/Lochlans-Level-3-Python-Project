@@ -17,10 +17,11 @@ class Shop:
 
     def __init__(self,parent):
         """This function initialises the class and creates the main GUI."""
-        title_frame = Frame(parent)
-        option_select_frame = Frame(parent)
-        order_frame = Frame(parent)
-        confirm_item_add_frame = Frame(parent)
+        self.mainframe = Frame(parent)
+        title_frame = Frame(self.mainframe)
+        option_select_frame = Frame(self.mainframe)
+        order_frame = Frame(self.mainframe)
+        self.edit_order_frame = Frame(parent)
 
         self.food_items = [["Pizza", 8.50], ["Burger", 12.50], ["Fries", 2.50] , ["Soda", 1.50] , ["Sausage Roll", 6.50]]
 
@@ -33,12 +34,13 @@ class Shop:
         count = 0
         count2 = 0
         for food in self.food_items:
-            option_select_list.append(Button(option_select_frame, text=food[0], command=lambda  m = count: self.add_to_order(m)).grid(row=count,column=count2,sticky=NSEW,padx=5))
+            option_select_list.append(Button(option_select_frame, text=food[0], command=lambda  m = count: self.add_to_order(m)).pack(fill=X,expand=True,padx=5,pady=5))
             count += 1
 
+        self.mainframe.grid()
         order_frame.grid(row=2, column=0, sticky="nsew")
-        edit_order =Button(order_frame, text="Edit Order", command=lambda: self.edit_order()).grid(row=0,column=0,sticky=NSEW,padx=5)
-        order_button = Button(order_frame, text="Order", command=lambda: self.order()).grid(row=0,column=1,sticky=NSEW,padx=5)
+        edit_order =Button(order_frame, text="Edit Order", command = self.edit_order).grid(row=0,column=0,sticky=NSEW,padx=5)
+        order_button = Button(order_frame, text="Order", command = self.order).grid(row=0,column=1,sticky=NSEW,padx=5)
         self.total_price = Label(order_frame, text="Total Price: $0.00", font=("Arial", 20))
         self.total_price.grid(row=0,column=2,sticky=NSEW,padx=5)
 
@@ -52,7 +54,15 @@ class Shop:
             pass
 
     def edit_order(self):
-        pass
+        self.mainframe.grid_forget()
+        self.edit_order_frame.grid(row=0, column=0, sticky="nsew")
+        for item in self.order_list:
+            Label(self.edit_order_frame, text=item.name).pack()
+        Button(self.edit_order_frame, text="Back", command = self.back).pack()
+
+    def back(self):
+        self.edit_order_frame.grid_forget()
+        self.mainframe.grid(row=0, column=0, sticky="nsew")
 
     def order(self):
         pass

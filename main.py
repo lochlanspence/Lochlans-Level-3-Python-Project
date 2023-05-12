@@ -21,12 +21,14 @@ class Shop:
         title_frame = Frame(self.mainframe)
         option_select_frame = Frame(self.mainframe)
         order_frame = Frame(self.mainframe)
-        self.edit_order_frame = Frame(parent)
+        self.review_order_frame = Frame(parent)
+        self.review_order_frame_child = Frame(self.review_order_frame)
 
         self.food_items = [["Pizza", 8.50], ["Burger", 12.50], ["Fries", 2.50] , ["Soda", 1.50] , ["Sausage Roll", 6.50]]
 
         option_select_list = []
         self.order_list = []
+        self.count = 0
         title_frame.grid(row=0, column=0, sticky="nsew")
         title = Label(title_frame, text="Mr H's Shop", font=("Arial", 20)).pack()
 
@@ -39,8 +41,7 @@ class Shop:
 
         self.mainframe.grid()
         order_frame.grid(row=2, column=0, sticky="nsew")
-        edit_order =Button(order_frame, text="Edit Order", command = self.edit_order).grid(row=0,column=0,sticky=NSEW,padx=5)
-        order_button = Button(order_frame, text="Order", command = self.order).grid(row=0,column=1,sticky=NSEW,padx=5)
+        order_button = Button(order_frame, text="Review Order", command = self.order).grid(row=0,column=1,sticky=NSEW,padx=5)
         self.total_price = Label(order_frame, text="Total Price: $0.00", font=("Arial", 20))
         self.total_price.grid(row=0,column=2,sticky=NSEW,padx=5)
 
@@ -53,19 +54,25 @@ class Shop:
         else:
             pass
 
-    def edit_order(self):
+    def order(self):
         self.mainframe.grid_forget()
-        self.edit_order_frame.grid(row=0, column=0, sticky="nsew")
+        self.review_order_frame.grid(row=0, column=0, sticky="nsew")
+        self.review_order_frame_child.grid(row=0, column=0, sticky="nsew")
         for item in self.order_list:
-            Label(self.edit_order_frame, text=item.name).pack()
-        Button(self.edit_order_frame, text="Back", command = self.back).pack()
+            Label(self.review_order_frame_child, text=item.name + " $" + str(item.price)).grid(row=self.count, column=0, sticky="nsew")
+            self.count += 1
+        Label(self.review_order_frame_child, text="Total Price: $" + str(self.total_price_calc())).grid(row=self.count + 1, column=0, sticky="nsew")
+        Button(self.review_order_frame_child, text="Edit Order", command=self.back).grid(row=self.count + 1, column=1, sticky="nsew")
+        Button(self.review_order_frame_child, text="Confirm Order", command=self.confirm).grid(row=self.count + 1, column=2, sticky="nsew")
 
     def back(self):
-        self.edit_order_frame.grid_forget()
+        self.review_order_frame.grid_forget()
         self.mainframe.grid(row=0, column=0, sticky="nsew")
+        self.count = 0
+        self.review_order_frame_child.grid_forget()
+        self.review_order_frame_child = Frame(self.review_order_frame)
+        self.update_total_price()
 
-    def order(self):
-        pass
 
     def update_total_price(self):
         self.total_price.configure(text="Total Price: $" + str(self.total_price_calc()))
@@ -76,10 +83,13 @@ class Shop:
             total += item.price
         return total
 
+    def confirm(self):
+        pass
 
 
 if __name__ == '__main__':
     root = Tk()
     root.title("Shop")
+    root.geometry("500x500")
     gui = Shop(root)
     root.mainloop()

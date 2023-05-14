@@ -84,7 +84,18 @@ class Shop:
         return total
 
     def confirm(self):
-        pass
+        check = messagebox.askyesno("Confirm", "Are you sure you want to confirm your order?")
+        if check == True:
+            self.order_list = []
+            self.count = 0
+            self.review_order_frame_child.destroy()
+            self.review_order_frame_child = Frame(self.review_order_frame)
+            self.review_order_frame.grid_forget()
+            self.mainframe.grid(row=0, column=0, sticky="nsew")
+            self.update_total_price()
+            messagebox.showinfo("Success", "Your order has been confirmed.")
+        else:
+            pass
 
 
 if __name__ == '__main__':

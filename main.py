@@ -34,7 +34,6 @@ class Shop:
 
         option_select_frame.grid(row=1, column=0, sticky="nsew")
         count = 0
-        count2 = 0
         for food in self.food_items:
             option_select_list.append(Button(option_select_frame, text=food[0], command=lambda  m = count: self.add_to_order(m)).pack(fill=X,expand=True,padx=5,pady=5))
             count += 1
@@ -46,7 +45,6 @@ class Shop:
         self.total_price.grid(row=0,column=2,sticky=NSEW,padx=5)
 
     def add_to_order(self, count):
-        print(count)
         check = messagebox.askyesno("Confirm", "Are you sure you want to add " + self.food_items[count][0] + " to your order?")
         if check == True:
             self.order_list.append(Support(self.food_items[count][0], self.food_items[count][1]))
@@ -60,10 +58,22 @@ class Shop:
         self.review_order_frame_child.grid(row=0, column=0, sticky="nsew")
         for item in self.order_list:
             Label(self.review_order_frame_child, text=item.name + " $" + str(item.price)).grid(row=self.count, column=0, sticky="nsew")
+            Button(self.review_order_frame_child, text="Remove Item", command=lambda m=item: self.remove(m)).grid(row=self.count, column=1, sticky="nsew")
             self.count += 1
-        Label(self.review_order_frame_child, text="Total Price: $" + str(self.total_price_calc())).grid(row=self.count + 1, column=0, sticky="nsew")
-        Button(self.review_order_frame_child, text="Edit Order", command=self.back).grid(row=self.count + 1, column=1, sticky="nsew")
-        Button(self.review_order_frame_child, text="Confirm Order", command=self.confirm).grid(row=self.count + 1, column=2, sticky="nsew")
+        Label(self.review_order_frame_child, text="Total Price: $" + str(self.total_price_calc())).grid(row=self.count + 1, columnspan=2, sticky="nsew")
+        Button(self.review_order_frame_child, text="Edit Order", command=self.back).grid(row=self.count + 2, column=0, sticky="nsew")
+        Button(self.review_order_frame_child, text="Confirm Order", command=self.confirm).grid(row=self.count + 2, column=1, sticky="nsew")
+
+    def remove(self, item):
+        check = messagebox.askyesno("Confirm", "Are you sure you want to remove " + item.name + " from your order?")
+        if check == True:
+            self.order_list.remove(item)
+            self.review_order_frame_child.destroy()
+            self.review_order_frame_child = Frame(self.review_order_frame)
+            self.order()
+            self.update_total_price()
+        else:
+            return
 
     def back(self):
         self.review_order_frame.grid_forget()

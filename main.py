@@ -1,6 +1,7 @@
 """This file is the main file for the shop program. It allows the user to order items of a menu and choose for them to be delivered or picked up. It also allows the user to edit their order before confirming it."""
 from tkinter import *
 from tkinter import messagebox
+import random
 
 
 class Support:
@@ -23,9 +24,12 @@ class Shop:
         order_frame = Frame(self.mainframe)
         self.review_order_frame = Frame(parent)
         self.review_order_frame_child = Frame(self.review_order_frame)
+        self.receipt_frame = Frame(parent)
 
         self.food_items = [["Pizza", 8.50], ["Burger", 12.50], ["Fries", 2.50] , ["Soda", 1.50] , ["Sausage Roll", 6.50]]
 
+        self.FONT = ("Arial", 16)
+        self.BOLDFONT = ("Arial", 16, "bold")
         option_select_list = []
         self.order_list = []
         self.count = 0
@@ -40,7 +44,7 @@ class Shop:
 
         self.mainframe.grid()
         order_frame.grid(row=2, column=0, sticky="nsew")
-        order_button = Button(order_frame, text="Review Order", command = self.order).grid(row=0,column=1,sticky=NSEW,padx=5)
+        order_button = Button(order_frame, text="Review Order", command = self.order).grid(row=0,column=1,sticky=NSEW,padx=5,pady=5)
         self.total_price = Label(order_frame, text="Total Price: $0.00", font=("Arial", 20))
         self.total_price.grid(row=0,column=2,sticky=NSEW,padx=5)
 
@@ -58,11 +62,16 @@ class Shop:
         self.review_order_frame_child.grid(row=0, column=0, sticky="nsew")
         for item in self.order_list:
             Label(self.review_order_frame_child, text=item.name + " $" + str(item.price)).grid(row=self.count, column=0, sticky="nsew")
-            Button(self.review_order_frame_child, text="Remove Item", command=lambda m=item: self.remove(m)).grid(row=self.count, column=1, sticky="nsew")
+            Button(self.review_order_frame_child, text="Remove Item", command=lambda m=item: self.remove(m)).grid(row=self.count, column=1, sticky="nsew", padx=5, pady=5)
             self.count += 1
         Label(self.review_order_frame_child, text="Total Price: $" + str(self.total_price_calc())).grid(row=self.count + 1, columnspan=2, sticky="nsew")
-        Button(self.review_order_frame_child, text="Edit Order", command=self.back).grid(row=self.count + 2, column=0, sticky="nsew")
-        Button(self.review_order_frame_child, text="Confirm Order", command=self.confirm).grid(row=self.count + 2, column=1, sticky="nsew")
+        Label(self.review_order_frame_child, text="Name:").grid(row=self.count + 2, columnspan=2, sticky="nsew")
+        self.user_name = Entry(self.review_order_frame_child, fg="grey")
+        self.user_name.bind("<FocusIn>", self.clear_entry_text)
+        self.user_name.insert(0, "Please enter your name.")
+        self.user_name.grid(row=self.count + 3, columnspan=2, sticky="nsew")
+        Button(self.review_order_frame_child, text="Edit Order", command=self.back).grid(row=self.count + 4, column=0, sticky="nsew", padx=5, pady=5)
+        Button(self.review_order_frame_child, text="Confirm Order", command=self.confirm).grid(row=self.count + 4, column=1, sticky="nsew", padx=5, pady=5)
 
     def remove(self, item):
         check = messagebox.askyesno("Confirm", "Are you sure you want to remove " + item.name + " from your order?")
@@ -94,23 +103,49 @@ class Shop:
         return total
 
     def confirm(self):
+        name = self.user_name.get().strip()
+        if name == "" or name.isdigit():
+            messagebox.showerror("Error", "Please enter a valid name.")
+            self.user_name.delete(0, END)
+            return
         check = messagebox.askyesno("Confirm", "Are you sure you want to confirm your order?")
         if check == True:
-            self.order_list = []
             self.count = 0
             self.review_order_frame_child.destroy()
             self.review_order_frame_child = Frame(self.review_order_frame)
             self.review_order_frame.grid_forget()
-            self.mainframe.grid(row=0, column=0, sticky="nsew")
+            self.receipt_frame.grid(row=0, column=0, sticky="nsew")
+            Label(self.receipt_frame, text="Name:", font=(self.BOLDFONT)).grid(row=1, column=0, sticky="nsew")
+            Label(self.receipt_frame, text=name).grid(row=2, column=0, sticky="nsew")
+            Label(self.receipt_frame, text="Items:", font=(self.BOLDFONT)).grid(row=3, column=0, sticky="nsew")
+            for item in self.order_list:
+                Label(self.receipt_frame, text=item.name).grid(row=self.count + 4, column=0, sticky="nsew")
+                self.count += 1
+            Label(self.receipt_frame, text="Total Price: $" + str(self.total_price_calc()), font=(self.BOLDFONT)).grid(row=self.count + 5, column=0, sticky="nsew")
+            Label(self.receipt_frame, text="Order Number: ").grid(row=self.count + 6, column=0, sticky="nsew")
+            Label(self.receipt_frame, text=random.randint(100, 999), font=(self.BOLDFONT)).grid(row=self.count + 7, column=0, sticky="nsew")
+            Button(self.receipt_frame, text="Place Another Order", command=self.wipe).grid(row=self.count + 8, column=0, sticky="nsew", padx=5, pady=5)
             self.update_total_price()
-            messagebox.showinfo("Success", "Your order has been confirmed.")
+            self.order_list = []
+            messagebox.showinfo("Success", "Your order has been confirmed. Thank you for shopping with us.")
         else:
             pass
+
+    def clear_entry_text(self, event):
+        self.user_name.delete(0, END)
+        self.user_name.config(fg="black")
+    
+    def wipe(self):
+        self.receipt_frame.grid_forget()
+        self.mainframe.grid(row=0, column=0, sticky="nsew")
+        self.count = 0
+        self.review_order_frame_child.grid_forget()
+        self.review_order_frame_child = Frame(self.review_order_frame)
+        self.update_total_price()
 
 
 if __name__ == '__main__':
     root = Tk()
     root.title("Shop")
-    root.geometry("500x500")
     gui = Shop(root)
     root.mainloop()

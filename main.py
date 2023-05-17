@@ -61,26 +61,35 @@ class Shop:
             pass
 
     def order(self):
+        self.clear_order_details()
         self.mainframe.grid_forget()
         self.review_order_frame.grid(row=0, column=0, sticky="nsew")
         self.review_order_frame_child.grid(row=0, column=0, sticky="nsew")
         for item in self.order_list:
-            Label(self.review_order_frame_child, text=item.name + " $" + str(item.price), font=(self.BOLDFONT)).grid(row=self.count, column=0, sticky="nsew")
+            Label(self.review_order_frame_child, text=item.name + " $" + str(item.price), font=self.BOLDFONT).grid(row=self.count, column=0, sticky="nsew")
             Button(self.review_order_frame_child, text="Remove Item", command=lambda m=item: self.remove(m)).grid(row=self.count, column=1, sticky="nsew", padx=5, pady=5)
             self.count += 1
-        Label(self.review_order_frame_child, font=(self.BOLDFONT), text="Total Price: $" + str(self.total_price_calc())).grid(row=self.count + 1, columnspan=2, sticky="nsew")
-        Label(self.review_order_frame_child, text="Name:", font=(self.BOLDFONT)).grid(row=self.count + 2, columnspan=2, sticky="nsew")
+        Label(self.review_order_frame_child, font=self.BOLDFONT, text="Total Price: $" + str(self.total_price_calc())).grid(row=self.count + 1, columnspan=2, sticky="nsew")
+        Label(self.review_order_frame_child, text="Name:", font=self.BOLDFONT).grid(row=self.count + 2, columnspan=2, sticky="nsew")
         self.user_name = Entry(self.review_order_frame_child, fg="grey")
         self.user_name.bind("<FocusIn>", self.clear_entry_text)
         self.user_name.insert(0, "Please enter your name.")
         self.user_name.grid(row=self.count + 3, columnspan=2, sticky="nsew")
-        self.dine_in_button = Button(self.review_order_frame_child, text="Dine In", font=(self.BOLDFONT), command=self.have_here)
+        self.dine_in_button = Button(self.review_order_frame_child, text="Dine In", font=self.BOLDFONT, command=self.have_here)
         self.dine_in_button.grid(row=self.count + 4, column=0, sticky="nsew", padx=5, pady=5)
-        self.takeaway_button = Button(self.review_order_frame_child, text="Take Away", font=(self.BOLDFONT), command=self.takeaway)
+        self.takeaway_button = Button(self.review_order_frame_child, text="Take Away", font=self.BOLDFONT, command=self.takeaway)
         self.takeaway_button.grid(row=self.count + 4, column=1, sticky="nsew", padx=5, pady=5)
         Label(self.review_order_frame_child, text="-----------------------------------").grid(row=self.count + 5, columnspan=2, sticky="nsew")
-        Button(self.review_order_frame_child, text="Edit Order", font=(self.BOLDFONT), command=self.back).grid(row=self.count + 6, column=0, sticky="nsew", padx=5, pady=5)
-        Button(self.review_order_frame_child, text="Confirm Order", font=(self.BOLDFONT), command=self.confirm).grid(row=self.count + 6, column=1, sticky="nsew", padx=5, pady=5)
+        Button(self.review_order_frame_child, text="Edit Order", font=self.BOLDFONT, command=self.back).grid(row=self.count + 6, column=0, sticky="nsew", padx=5, pady=5)
+        Button(self.review_order_frame_child, text="Confirm Order", font=self.BOLDFONT, command=self.confirm).grid(row=self.count + 6, column=1, sticky="nsew", padx=5, pady=5)
+
+    def clear_order_details(self):
+        for widget in self.review_order_frame_child.winfo_children():
+            widget.destroy()
+        self.count = 0
+        self.review_order_frame.grid_forget()
+        self.review_order_frame_child = Frame(self.review_order_frame)
+
 
     def have_here(self):
         self.order_option = "Dine In"

@@ -27,13 +27,13 @@ class Shop:
         self.review_order_frame_child = Frame(self.review_order_frame)
         self.receipt_frame = Frame(parent)
         # Create variables and lists
-        self.food_items = [["Pizza", 8.50], ["Burger", 12.50], ["Fries", 2.50], ["Soda", 1.50], ["Sausage Roll", 6.50]]
+        self.food_items = [["Sushi (Japan)", 20], ["Peking Duck (China)", 40], ["Goulash (Hungary)", 10], ["Moussaka (Greece)", 15], ["Pad Thai (Thailand)", 8], ["Tacos (Mexico)", 3], ["Churros (Spain)", 5], ["Wiener Schnitzel (Austria)", 20], ["Lobster Roll (United States)", 25], ["Haggis (Scotland)", 15], ["Tiramisu (Italy)", 8], ["Feijoada (Brazil)", 12], ["Espresso (Italy)", 3], ["Margarita (Mexico)", 10], ["Mojito (Cuba)", 12], ["Champagne (France)", 50], ["Tequila (Mexico)", 6], ["Sangria (Spain)", 8], ["Gin and Tonic (England)", 7], ["Matcha Latte (Japan)", 5]]
         self.order_option = ""
         option_select_list = []
         self.order_list = []
         self.count = 0
         title_frame.grid(row=0, column=0, sticky="nsew")
-        Label(title_frame, text="Mr H's Shop", font=("Arial", 20)).pack()
+        Label(title_frame, text="World's Delicacies", font=("Arial", 20)).pack()
         option_select_frame.grid(row=1, column=0, sticky="nsew")
         count = 0
         # Create Constants
@@ -184,7 +184,7 @@ class Shop:
             self.review_order_frame_child = Frame(self.review_order_frame)
             self.review_order_frame.grid_forget()
             self.receipt_frame.grid(row=0, column=0, sticky="nsew")
-            Label(self.receipt_frame, text="Mr H's Shop", font=("Arial", 20)).grid(row=0, column=0, sticky="nsew")
+            Label(self.receipt_frame, text="World's Delicacies", font=("Arial", 20)).grid(row=0, column=0, sticky="nsew")
             Label(self.receipt_frame, text=self.order_option, font=(self.FONT)).grid(row=1, column=0, sticky="nsew")
             Label(self.receipt_frame, text="Name:", font=(self.BOLDFONT)).grid(row=2, column=0, sticky="nsew")
             Label(self.receipt_frame, text=name).grid(row=3, column=0, sticky="nsew")
